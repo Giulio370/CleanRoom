@@ -46,52 +46,79 @@ class _FloorSelectionPageState extends State<FloorSelectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Selezione Piano'),
+        title: Text('Selezione Piano', style: TextStyle(color: Colors.white),),
+        backgroundColor: Colors.blueAccent,
       ),
       drawer: CustomDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //4 Card, ognuna rappresenta un piano
-            for(int i =1; i<=4; i++) ...[
+            Text(
+              "Seleziona il piano desiderato:",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+            SizedBox(height: 20),
+            // Card per ciascun piano
+            for (int i = 1; i <= 4; i++) ...[
               GestureDetector(
-                onTap: () => _selectFloor(i), //Aggiorna il piano selezionato
-                child: Card(
-                  color: _selectedFloor == i ? Colors.blue : Colors.grey[300], //Colore Condizionale
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                onTap: () => _selectFloor(i), // Aggiorna il piano selezionato
+                child: AnimatedContainer(
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  decoration: BoxDecoration(
+                    color: _selectedFloor == i ? Colors.blueAccent : Colors.grey[200],
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      if (_selectedFloor == i)
+                        BoxShadow(
+                          color: Colors.blueAccent.withOpacity(0.4),
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
+                    ],
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16,35,16,35),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Piano $i",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: _selectedFloor == i ? Colors.white : Colors.black,
-                        ),
-                        ),
-                        if(_selectedFloor == i)//Mostra un'icona solo se selezionato
+                  padding: const EdgeInsets.fromLTRB(16, 35, 16, 35),
+                  margin: const EdgeInsets.only(bottom: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
                           Icon(
-                            Icons.check_circle,
-                            color: Colors.white,
-                          )
-                      ],
-                    ),
+                            Icons.apartment,
+                            size: 30,
+                            color: _selectedFloor == i ? Colors.white : Colors.black54,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            "Piano $i",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: _selectedFloor == i ? Colors.white : Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (_selectedFloor == i) // Mostra l'icona solo se selezionato
+                        Icon(
+                          Icons.check_circle,
+                          color: Colors.white,
+                          size: 30,
+                        )
+                    ],
                   ),
                 ),
               ),
-              SizedBox(height: 10),
-            ]
+            ],
           ],
         ),
-      )
+      ),
     );
   }
+
 
 
 }
