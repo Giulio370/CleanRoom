@@ -26,288 +26,8 @@ class _RoomsPageState extends State<RoomsScreen>{
   void initState(){
     super .initState();
     _customDrawer = CustomDrawer();//Pre-Carica il Drawer
-
     loadFloorAndRooms();
-
-
   }
-
-  /*Future<void> loadFloorAndRooms() async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    //Recupera il piano salvato
-    selectedFloor = prefs.getInt('selected_floor') ?? 0;
-
-    //Se il piano è 0 non caricare le camere
-    if(selectedFloor ==0){
-      setState(() {
-        //Ridisegna per mostrare la card
-      });
-      return;
-    }
-    url_per_chiamate=prefs.getString('indirizzo_api') ?? '';
-    api_key_per_chiamate = prefs.getString('api_key') ?? '';
-
-    if (url_per_chiamate.isEmpty || api_key_per_chiamate.isEmpty) {
-      return;
-    }
-    final url = Uri.parse('$url_per_chiamate/PrenotazioneCamere/1');
-
-    try {
-      final response = await http.get(
-        url,
-        headers: {
-          'X-Api-Key':api_key_per_chiamate,
-        },
-      );
-
-      if (response.statusCode == 200) {
-
-
-      } else {
-
-    } catch (e) {
-
-    } finally {
-
-    }
-
-    //Mock della chiamata Api (filtro per il piano selezionato)
-    List<Map<String, dynamic>> mockResponse =
-    [
-      {
-        "idPrenotazione": 111276,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 202,
-        "nPersone": 0,
-        "soggiorno": "A",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-24T00:00:00",
-        "dataPartenza": "2024-12-26T00:00:00",
-        "nomeCliente": "PETRACHI"
-      },
-      {
-        "idPrenotazione": 111761,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 219,
-        "nPersone": 0,
-        "soggiorno": "S",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-23T00:00:00",
-        "dataPartenza": "2024-12-27T00:00:00",
-        "nomeCliente": "PIRAZZINI"
-      },
-      {
-        "idPrenotazione": 112426,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 205,
-        "nPersone": 0,
-        "soggiorno": "A",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-24T00:00:00",
-        "dataPartenza": "2024-12-26T00:00:00",
-        "nomeCliente": "CHERA MARIA"
-      },
-      {
-        "idPrenotazione": 112626,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 220,
-        "nPersone": 0,
-        "soggiorno": "A",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-24T00:00:00",
-        "dataPartenza": "2024-12-26T00:00:00",
-        "nomeCliente": "CHERA"
-      },
-      {
-        "idPrenotazione": 112917,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 221,
-        "nPersone": 0,
-        "soggiorno": "A",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-24T00:00:00",
-        "dataPartenza": "2024-12-26T00:00:00",
-        "nomeCliente": "FASSINA"
-      },
-      {
-        "idPrenotazione": 112985,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 223,
-        "nPersone": 0,
-        "soggiorno": "A",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-24T00:00:00",
-        "dataPartenza": "2024-12-26T00:00:00",
-        "nomeCliente": "FERRARI"
-      },
-      {
-        "idPrenotazione": 112986,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 222,
-        "nPersone": 0,
-        "soggiorno": "S",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-23T00:00:00",
-        "dataPartenza": "2024-12-26T00:00:00",
-        "nomeCliente": "FERRARI"
-      },
-      {
-        "idPrenotazione": 113031,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 215,
-        "nPersone": 0,
-        "soggiorno": "A",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-24T00:00:00",
-        "dataPartenza": "2024-12-26T00:00:00",
-        "nomeCliente": "BORTOLIN"
-      },
-      {
-        "idPrenotazione": 113075,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 201,
-        "nPersone": 0,
-        "soggiorno": "P",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-23T00:00:00",
-        "dataPartenza": "2024-12-24T00:00:00",
-        "nomeCliente": "VAZZOLER"
-      },
-      {
-        "idPrenotazione": 113076,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 209,
-        "nPersone": 0,
-        "soggiorno": "P",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-23T00:00:00",
-        "dataPartenza": "2024-12-24T00:00:00",
-        "nomeCliente": "VAZZOLER"
-      },
-      {
-        "idPrenotazione": 113150,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 204,
-        "nPersone": 0,
-        "soggiorno": "S",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-22T00:00:00",
-        "dataPartenza": "2025-01-12T00:00:00",
-        "nomeCliente": "RAMIREZ"
-      },
-      {
-        "idPrenotazione": 113371,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 223,
-        "nPersone": 0,
-        "soggiorno": "P",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-21T00:00:00",
-        "dataPartenza": "2024-12-24T00:00:00",
-        "nomeCliente": "CERUTTI"
-      },
-      {
-        "idPrenotazione": 113588,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 211,
-        "nPersone": 0,
-        "soggiorno": "P",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-23T00:00:00",
-        "dataPartenza": "2024-12-24T00:00:00",
-        "nomeCliente": "PAOLETTO"
-      },
-      {
-        "idPrenotazione": 113589,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 212,
-        "nPersone": 0,
-        "soggiorno": "P",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-23T00:00:00",
-        "dataPartenza": "2024-12-24T00:00:00",
-        "nomeCliente": "PAOLETTO"
-      },
-      {
-        "idPrenotazione": 113590,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 214,
-        "nPersone": 0,
-        "soggiorno": "P",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-23T00:00:00",
-        "dataPartenza": "2024-12-24T00:00:00",
-        "nomeCliente": "PAOLETTO"
-      },
-      {
-        "idPrenotazione": 114258,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 215,
-        "nPersone": 0,
-        "soggiorno": "P",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-23T00:00:00",
-        "dataPartenza": "2024-12-24T00:00:00",
-        "nomeCliente": "PASTROVICCHIO"
-      },
-      {
-        "idPrenotazione": 114391,
-        "data": "2024-12-24T00:00:00",
-        "nCamera": 203,
-        "nPersone": 0,
-        "soggiorno": "S",
-        "eseguita": false,
-        "dataEseguita": null,
-        "piano": 2,
-        "dataArrivo": "2024-12-23T00:00:00",
-        "dataPartenza": "2024-12-26T00:00:00",
-        "nomeCliente": "PREVITALI"
-      }
-    ];
-
-
-    rooms = mockResponse.toList();
-
-    setState(() {
-      //Aggiorna la UI
-    });
-
-
-
-  }*/
 
   // Funzione per mostrare il dialogo di setup
   void _showSetupDialog(BuildContext context) {
@@ -426,6 +146,9 @@ class _RoomsPageState extends State<RoomsScreen>{
       return;
     }
 
+    //Implementazione del Modal
+
+
     // Impostiamo lo stato della camera a 'eseguita' e aggiorniamo la data
     setState(() {
       rooms[index]['eseguita'] = true;
@@ -476,7 +199,7 @@ class _RoomsPageState extends State<RoomsScreen>{
     }
   }
 
-  // Funzione di utilità per righe informative
+  // Funzione di utilità per le righe informative
   Widget _buildInfoRow(IconData icon, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
@@ -504,188 +227,6 @@ class _RoomsPageState extends State<RoomsScreen>{
       ),
     );
   }
-
-/*
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title:
-                Text('Stanze del Piano'),
-        actions: [
-          Padding(padding: const EdgeInsets.fromLTRB(0, 0, 20, 0) , child:
-          ElevatedButton(
-            onPressed: isLoading ? null : () async {
-              setState(() {
-                isLoading = true;
-              });
-              await loadFloorAndRooms();
-              */
-/*setState(() {
-                isLoading = false;
-              });*//*
-
-
-              // Timer per evitare di premere il pulsante troppo velocemente
-              Future.delayed(Duration(seconds: 1), () {
-                setState(() {
-                  isLoading = false;  // Riabilita il pulsante dopo 2 secondi
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Lista aggiornata!'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
-                });
-              });
-            },
-            child: isLoading
-                ? Row(
-              children: [
-                Text('Caricamento...', style: TextStyle(color: Colors.black)),
-                SizedBox(width: 8),
-                Container(
-                  height: 20.0, // Imposta l'altezza desiderata
-                  width: 20.0,  // Imposta la larghezza desiderata
-                  child: CircularProgressIndicator(
-                    color: Colors.black,
-                    strokeWidth: 2, // Modifica lo spessore della linea
-                  ),
-                )
-              ],
-            )
-                : Row(
-              children: [
-                Text('Aggiorna', style: TextStyle(color: Colors.black)),
-                Icon(Icons.update_rounded, color: Colors.black),
-              ],
-            ),
-            style: ButtonStyle(
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  side: BorderSide(color: Colors.black),
-                ),
-              ),
-            ),
-          ),
-          )
-        ],
-      ),
-      drawer: CustomDrawer(),
-      body: selectedFloor == 0
-        ? Center(
-        child: Card(
-          color:  Colors.orange,
-          child: InkWell(
-            onTap: (){
-              Navigator.pushNamed(context, 'floor_selection_screen');
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                'Seleziona un piano per visualizzare le camere',
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-          ),
-        ),
-      )
-          : GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // Numero di colonne
-          childAspectRatio: 2.5, // Rapporto larghezza/altezza
-          crossAxisSpacing: 8.0, // Spaziatura orizzontale
-          mainAxisSpacing: 8.0, // Spaziatura verticale
-        ),
-        itemCount: rooms.length,
-        itemBuilder: (context, index) {
-          final room = rooms[index];
-          return GestureDetector(
-            onTap: room['eseguita'] ? null : () => updateRoomStatus(index),
-            child: Card(
-              color: room['eseguita'] ? Colors.green[100] : Colors.red[100],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              elevation: 4,
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Titolo Camera
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Camera ${room['nCamera']}',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[800],
-                          ),
-                        ),
-
-
-
-                        if (room['soggiorno'] == 'A' || room['soggiorno'] == 'P')
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                            decoration: BoxDecoration(
-                              color: room['soggiorno'] == 'A' ? Colors.blue[300] : Colors.orange[300],
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  room['soggiorno'] == 'A' ? Icons.login : Icons.logout,
-                                  color: Colors.white,
-                                  size: 24,
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  room['soggiorno'] == 'A' ? 'Arrivo' : 'Partenza',
-                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                        Icon(
-                          room['eseguita'] ? Icons.check_circle : Icons.hourglass_empty,
-                          color: room['eseguita'] ? Colors.green : Colors.red,
-                          size: 24,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 2),
-                    // Informazioni principali
-                    Padding(padding: EdgeInsets.fromLTRB(20, 0, 0,0),
-                    child: Column(
-                      children: [
-                        _buildInfoRow(Icons.person, 'Persone:', room['nPersone'].toString()),
-                        _buildInfoRow(Icons.person_outline, 'Nominativo:', room['nomeCliente']),
-                        _buildInfoRow(Icons.calendar_today, 'Data Arrivo:', _formatDate(room['dataArrivo'])),
-                        _buildInfoRow(Icons.calendar_today_outlined, 'Data Partenza:', _formatDate(room['dataPartenza'])),
-                      ],
-                    ),
-                    ),
-                    SizedBox(height: 12),
-
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-*/
 
   @override
   Widget build(BuildContext context) {
@@ -787,8 +328,99 @@ class _RoomsPageState extends State<RoomsScreen>{
             itemCount: rooms.length,
             itemBuilder: (context, index) {
               final room = rooms[index];
+              /*return GestureDetector(
+                //onTap: room['eseguita'] ? null : () => updateRoomStatus(index),
+                onTap: room['eseguita'] ? null : () {
+                  showModalBottomSheet<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return SizedBox(
+                        height: 200,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              const Text('Si è sicuri di voler pulire la stanza?'),
+                              ElevatedButton(
+                                child: const Text('Pulisci'),
+                                onPressed: () => updateRoomStatus(index),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+
+                },*/
               return GestureDetector(
-                onTap: room['eseguita'] ? null : () => updateRoomStatus(index),
+                onTap: room['eseguita']
+                    ? null
+                    : () {
+                  showModalBottomSheet<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return SizedBox(
+                        height: 200,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  text: 'Si sta cercando di pulire la stanza ',
+                                  style: const TextStyle(
+                                    fontSize: 18, // Testo leggermente più grande
+                                    color: Colors.black, // Colore principale
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: '${room['nCamera']}', // Numero della stanza
+                                      style: const TextStyle(
+                                        fontSize: 20, // Più grande per evidenziarlo
+                                        fontWeight: FontWeight.bold, // Grassetto
+                                        color: Colors.lightBlue, // Colore diverso per metterlo in evidenza
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton.icon(
+                                    icon: const Icon(Icons.check, color: Colors.white),
+                                    label: const Text('Pulisci', style: TextStyle(color: Colors.white)),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green[400],
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context); // Chiude la modale
+                                      updateRoomStatus(index);
+                                    },
+                                  ),
+                                  ElevatedButton.icon(
+                                    icon: const Icon(Icons.close, color: Colors.white),
+                                    label: const Text('Annulla', style: TextStyle(color: Colors.white),),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red[400],
+                                    ),
+                                    onPressed: () => Navigator.pop(context), // Chiude la modale
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+
                 child: Card(
                   color: room['eseguita'] ? Colors.green[100] : Colors.red[100],
                   shape: RoundedRectangleBorder(
