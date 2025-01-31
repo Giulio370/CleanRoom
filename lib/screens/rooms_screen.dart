@@ -29,6 +29,27 @@ class _RoomsPageState extends State<RoomsScreen>{
     loadFloorAndRooms();
   }
 
+  //Funzione per mostrare le note della camera
+  void _showNoteDialog(BuildContext context, String numeroStanza, String note) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Stanza $numeroStanza'),
+          content: SingleChildScrollView(
+            child: Text(note),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Chiudi'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // Funzione per mostrare il dialogo di setup
   void _showSetupDialog(BuildContext context) {
     showDialog(
@@ -205,6 +226,7 @@ class _RoomsPageState extends State<RoomsScreen>{
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         children: [
+
           Icon(icon, size: 20, color: Colors.grey[700]),
           SizedBox(width: 5),
           Text(
@@ -228,8 +250,19 @@ class _RoomsPageState extends State<RoomsScreen>{
     );
   }
 
+
+
   @override
   Widget build(BuildContext context) {
+
+    ///Bloccotest
+    final Size screenSize = MediaQuery.of(context).size;
+    final double cardWidth = screenSize.width / 2 - 16; // Adatta per il padding
+    final double cardHeight = 245; // Altezza fissa per le card
+    final double pointForInfoBoxes = 245; // Altezza fissa per le card
+    final double aspectRatio = cardWidth / cardHeight;
+    ///blocco test fine
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Stanze del Piano'),
@@ -319,41 +352,17 @@ class _RoomsPageState extends State<RoomsScreen>{
           // Aggiusta il numero di colonne in base all'orientamento
           int crossAxisCount = constraints.maxWidth > 700 ? 2 : 1; // Più colonne per schermi grandi
           return GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount
+            (
               crossAxisCount: crossAxisCount, // Numero di colonne dinamico
-              childAspectRatio: 2.5, // Rapporto larghezza/altezza
+              //childAspectRatio: 2.5, // Rapporto larghezza/altezza
+              childAspectRatio: aspectRatio, // Rapporto adattivo
               crossAxisSpacing: 8.0, // Spaziatura orizzontale
               mainAxisSpacing: 8.0, // Spaziatura verticale
             ),
             itemCount: rooms.length,
             itemBuilder: (context, index) {
               final room = rooms[index];
-              /*return GestureDetector(
-                //onTap: room['eseguita'] ? null : () => updateRoomStatus(index),
-                onTap: room['eseguita'] ? null : () {
-                  showModalBottomSheet<void>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return SizedBox(
-                        height: 200,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              const Text('Si è sicuri di voler pulire la stanza?'),
-                              ElevatedButton(
-                                child: const Text('Pulisci'),
-                                onPressed: () => updateRoomStatus(index),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-
-                },*/
               return GestureDetector(
                 onTap: room['eseguita']
                     ? null
@@ -430,67 +439,101 @@ class _RoomsPageState extends State<RoomsScreen>{
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Padding(
                     padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Titolo Camera
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Camera ${room['nCamera']}',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[800],
-                              ),
-                            ),
-                            if (room['soggiorno'] == 'A' || room['soggiorno'] == 'P')
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                                decoration: BoxDecoration(
-                                  color: room['soggiorno'] == 'A' ? Colors.blue[300] : Colors.orange[300],
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      room['soggiorno'] == 'A' ? Icons.login : Icons.logout,
-                                      color: Colors.white,
-                                      size: 24,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text(
-                                      room['soggiorno'] == 'A' ? 'Arrivo' : 'Partenza',
-                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            Icon(
-                              room['eseguita'] ? Icons.check_circle : Icons.hourglass_empty,
-                              color: room['eseguita'] ? Colors.green : Colors.red,
-                              size: 24,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 2),
-                        // Informazioni principali
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                          child: Column(
+                    child:Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Titolo Camera
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              _buildInfoRow(Icons.person, 'Persone:', room['nPersone'].toString()),
-                              _buildInfoRow(Icons.person_outline, 'Nominativo:', room['nomeCliente']),
-                              _buildInfoRow(Icons.calendar_today, 'Data Arrivo:', _formatDate(room['dataArrivo'])),
-                              _buildInfoRow(Icons.calendar_today_outlined, 'Data Partenza:', _formatDate(room['dataPartenza'])),
+                              Text(
+                                'Camera ${room['nCamera']}',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey[800],
+                                ),
+                              ),
+                              if (room['soggiorno'] == 'A' || room['soggiorno'] == 'P')
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                                  decoration: BoxDecoration(
+                                    color: room['soggiorno'] == 'A' ? Colors.blue[300] : Colors.orange[300],
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        room['soggiorno'] == 'A' ? Icons.login : Icons.logout,
+                                        color: Colors.white,
+                                        size: 24,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        room['soggiorno'] == 'A' ? 'Arrivo' : 'Partenza',
+                                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              Icon(
+                                room['eseguita'] ? Icons.check_circle : Icons.hourglass_empty,
+                                color: room['eseguita'] ? Colors.green : Colors.red,
+                                size: 24,
+                              ),
                             ],
                           ),
-                        ),
-                        SizedBox(height: 12),
-                      ],
-                    ),
+                          SizedBox(height: 2),
+                          // Informazioni principali
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildInfoRow(Icons.person, 'Persone:', room['nPersone'].toString()),
+                                _buildInfoRow(Icons.person_outline, 'Nominativo:', room['nomeCliente']),
+                                _buildInfoRow(Icons.calendar_today, 'Data Arrivo:', _formatDate(room['dataArrivo'])),
+                                _buildInfoRow(Icons.calendar_today_outlined, 'Data Partenza:', _formatDate(room['dataPartenza'])),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      child: _buildInfoRow(
+                                        Icons.notes_outlined,
+                                        'Note:',
+                                        room['notePulizie'] ?? 'Nessuna nota',
+
+                                      ),
+                                      width: 175,
+                                    ),
+
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.info_outline,
+                                        size: 20,
+                                        color: Colors.grey[700],
+                                      ),
+                                      onPressed: () => _showNoteDialog(context, room['nCamera'].toString(), room['notePulizie'] ?? 'Nessuna nota'),
+
+                                    )
+                                  ],
+                                )
+
+                                
+
+
+
+
+                                
+
+
+
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 12),
+                        ],
+                      ),
                   ),
                 ),
               );
